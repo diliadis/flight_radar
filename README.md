@@ -7,4 +7,4 @@ multiple .csv files, one for every month since 5/2018.
 
 The visualization can be customized based on the size of every airport's node as well as its color. 
 
-<img src="images/30_4_2019_node_size_in_degree_node_color_in_degree.png" width = "300"/>
+![alt text](https://github.com/diliadis/flight_radar/blob/master/images/15_5_2018_node_size_in_degree_node_color_in_degree.png)
