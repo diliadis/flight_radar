@@ -10,7 +10,7 @@ import network_visualizer
 
 
 def main():
-    choice = raw_input("Plot a newly crawled route network (y/n): ")
+    choice = input("Plot a newly crawled route network (y/n): ")
     if choice == 'y':
         output_file_name = routes_crawler()
     elif choice == 'n':
@@ -19,7 +19,7 @@ def main():
         for index, file_name in enumerate(files_list):
             print(str(index) + ') ' + file_name)
         try:
-            file_index = int(raw_input("Choose the index of the file you want to plot: "))
+            file_index = int(input("Choose the index of the file you want to plot: "))
         except ValueError:
             print('Problem with the input type. By default using the last crawled route network')
             file_index = len(files_list)-1
