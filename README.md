@@ -4,8 +4,7 @@ This is a python project that crawls the [flight_radar_24](https://www.flightrad
 
 
 
-The program can crawl the flight-radar-24 website and create a .csv file that can be used to plot the routes network. I've already generated
-multiple .csv files, one for every month since 5/2018. 
+The program can crawl the flight-radar-24 website and create a .csv file that can be used to plot the routes network. Multiple datasets have already been generated (usually one per monrth) since 5/2018. 
 
 The visualization can be customized based on the size of every airport's node as well as its color. 
 
