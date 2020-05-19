@@ -15,4 +15,4 @@ The image above was generated from the recorded routes on 15/5/2018
 
 We were able to record the routes on the same day after two years (15/5/2020).You can clearly see the effect of the coronavirus pandemic in the density of routes.
 
-![alt text](https://github.com/diliadis/flight_radar/blob/master/images/16_5_2020_node_size_in_degree_node_color_in_degree.png)
+![alt text](https://github.com/diliadis/flight_radar/blob/master/images/16_5_2020_node_size__in_degree__node_color_in_degree.png)
