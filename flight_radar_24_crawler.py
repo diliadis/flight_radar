@@ -1,3 +1,5 @@
+import os
+os.environ["PROJ_LIB"] = os.path.join(os.environ["CONDA_PREFIX"], "share", "proj")
 import pandas as pd
 from bs4 import BeautifulSoup as soup
 import cfscrape
@@ -62,7 +64,9 @@ def airports_crawler():
         destinations_container = page_soup.findAll("script")
         # find the specific script that contains all the routes
         for tag in destinations_container:
-            tag = tag.encode('utf-8')
+            # tag = tag.encode('utf-8')
+            tag = str(tag)
+
             if (tag.startswith('<script>var arrRoutes')):
                 start = tag.find('[')
                 finish = tag.find(']')
@@ -70,16 +74,16 @@ def airports_crawler():
 
         for i in destinations_list:
             if i['iata'] != None:
-                if i['iata'].encode('utf-8') not in target_list:
-                    print('New airport: '+i['iata'].encode('utf-8'))
-                    city_list.append(i['city'].encode('utf-8'))
-                    name_list.append(i['name'].encode('utf-8'))
-                    country_list.append(i['country'].encode('utf-8'))
-                    target_list.append(i['iata'].encode('utf-8'))
+                if i['iata'] not in target_list:
+                    print('New airport: '+i['iata'])
+                    city_list.append(i['city'])
+                    name_list.append(i['name'])
+                    country_list.append(i['country'])
+                    target_list.append(i['iata'])
                     lon_list.append(i['lon'])
                     lat_list.append(i['lat'])
             else:
-                print('This airport has no iata code registered :'+i['icao'].encode('utf-8'))
+                print('This airport has no iata code registered :'+i['icao'])
 
     # create a new dataframe to store all the routes we get from crawling the website www.world-airport-codes.com
     airports_df = pd.DataFrame({#'Origin': source_list,
@@ -116,41 +120,56 @@ def routes_crawler():
         scraper.close()
         # parse contents to html
         page_soup = soup(raw_html, "html.parser")
-        print('     ' + page_soup.title.string.encode('utf-8'))
+        print('     ' + page_soup.title.string)
 
         # get all the script tags
         destinations_container = page_soup.findAll("script")
         # find the specific script that contains all the destination airport data
         for tag in destinations_container:
-            tag = tag.encode('utf-8')
+            tag = str(tag)
             if tag.startswith('<script>var arrRoutes'):
                 start = tag.find('[')
                 finish = tag.find(']')
                 destinations_list = json.loads(tag[start:finish + 1])
 
         print('checking '+str(len(destinations_list))+' routes')
-
+        print('destinations_list: '+str(destinations_list))
         for destination in destinations_list:
             if destination['iata'] != None:
-                if destination['iata'].encode('utf-8') in airports_list and str(airport_code) in airports_list:
+                print('destination["iata"] != None : '+str(destination['iata'] != None))
+                print('destination["iata"] in airports_list : '+str(destination['iata'] in airports_list))
+                print('str(airport_code) in airports_list : '+str(str(airport_code) in airports_list))
+                if destination['iata'] in airports_list and str(airport_code) in airports_list:
 
-                    print(str(airport_code) + ' <- -> ' + destination['iata'].encode('utf-8'))
-                    json_url = airport_fr_url + '?get-airport-arr-dep='+destination['iata'].encode('utf-8')+'&format=json'
+                    print(str(airport_code) + ' <- -> ' + destination['iata'])
+                    json_url = airport_fr_url + '?get-airport-arr-dep='+destination['iata']+'&format=json'
                     scraper = cfscrape.create_scraper(delay=30)
-                    json_response = json.loads(scraper.get(json_url).content.encode('utf-8'))
+                    json_response = json.loads(scraper.get(json_url).content)
                     scraper.close()
 
                     if json_response: #check if the json is not empty
                         try:
                             for m in ['arrivals', 'departures']:
                                 number_of_flights = 0
-                                flights = json_response[m].values()[0]['airports'].itervalues().next()['flights']
-                                for flight in flights.itervalues():
+                                print('m: '+str(m))
+                                print('list(json_response[m].values()): '+str(list(json_response[m].values())))
+                                print('list(list(json_response[m].values())[0]["airports"].values())'+str(list(list(json_response[m].values())[0]['airports'].values())))
+                                flights = list(list(json_response[m].values())[0]['airports'].values())[0]['flights']
+                                print('flights'+str(flights))
+                                for flight in flights.values():
                                     hours = flight['utc']
+                                    print('hours: '+str(hours))
                                     number_of_flights += len(hours)
+                                    print('number_of_flights: '+str(number_of_flights))
+
                                 number_of_flights_list.append(number_of_flights)
-                                airport_1_code = airports_list.index(destination['iata'].encode('utf-8'))
+                                print('number_of_flights_list: '+str(number_of_flights_list))
+                                print('destination["iata"]: '+str(destination['iata']))
+                                airport_1_code = airports_list.index(destination['iata'])
+                                print('airport_1_code: '+str(airport_1_code))
+                                print('str(airport_code): '+str(airport_code))
                                 airport_2_code = airports_list.index(str(airport_code))
+                                print('airport_2_code: '+str(airport_2_code))
                                 if m == 'arrivals':
                                     print('Arrivals     '+str(number_of_flights)+' flights')
                                     source_airport_list.append(airport_1_code)
@@ -164,8 +183,8 @@ def routes_crawler():
                     else:
                         print('DOES NOT HAVE ANY FLIGHTS!!!')
             else:
-                print('This airport has no iata code registered :' + destination['icao'].encode('utf-8'))
-
+                print('This airport has no iata code registered :' + destination['icao'])
+        print('=======================================================================================================')
     routes_df = pd.DataFrame({'Source': source_airport_list, 'Target': target_airport_list, 'Weight': number_of_flights_list})
     now = datetime.datetime.now()
     output_file_name = 'routes_data/flight_radar_24_routes_with_weights_and_bi_direct_'+str(now.day)+'_'+str(now.month)+'_'+str(now.year)+'.csv'
