@@ -8,11 +8,11 @@ The program can crawl the flight-radar-24 website and create a .csv file that ca
 
 The visualization can be customized based on the size of every airport's node as well as its color. 
 
+## Europe sometime back in the day when we could work from our offices (15/5/2018)
 ![alt text](https://github.com/diliadis/flight_radar/blob/master/images/15_5_2018_node_size_in_degree_node_color_in_degree.png)
 
-
-The image above was generated from the recorded routes on 15/5/2018
-
-We were able to record the routes on the same day after two years (15/5/2020).You can clearly see the effect of the coronavirus pandemic in the density of routes.
-
+## Europe in the middle of covid-19 crisis (16/5/2020)
 ![alt text](https://github.com/diliadis/flight_radar/blob/master/images/16_5_2020_node_size__in_degree__node_color_in_degree.png)
+
+## Europe at the day when most countries opened their borders for tourists (1/7/2020)
+![alt text](https://github.com/diliadis/flight_radar/blob/master/images/1_7_2020_node_size__in_degree__node_color_in_degree.png)
