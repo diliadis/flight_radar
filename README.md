@@ -16,3 +16,6 @@ The visualization can be customized based on the size of every airport's node as
 
 ## Europe at the day when most countries opened their borders for tourists (1/7/2020)
 ![alt text](https://github.com/diliadis/flight_radar/blob/master/images/1_7_2020_node_size__in_degree__node_color_in_degree.png)
+
+## Europe at 16/7/2020
+![alt text](https://github.com/diliadis/flight_radar/blob/master/images/16_7_2020_node_size__in_degree__node_color_in_degree.png)
