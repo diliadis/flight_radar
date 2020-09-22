@@ -22,3 +22,7 @@ The visualization can be customized based on the size of every airport's node as
 
 ## Europe at 14/8/2020
 ![alt text](https://github.com/diliadis/flight_radar/blob/master/images/14_8_2020_node_size__in_degree__node_color_in_degree.png)
+
+## Europe at 14/9/2020
+![alt text](https://github.com/diliadis/flight_radar/blob/master/images/14_9_2020_node_size__in_degree__node_color_in_degree.png)
+
