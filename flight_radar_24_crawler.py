@@ -16,6 +16,7 @@ import numpy as np
 
 from folium import Map
 from folium.plugins import HeatMap
+import cloudscraper
 
 
 def main():
@@ -42,7 +43,7 @@ def main():
     plot_airport_network(output_file_name)
 
 
-def airports_crawler():
+def airports_crawler(scraper_bypasser='cloudscraper'):
     # load the csv with the european airport codes
     df = pd.read_csv('airports_data/european_airports.csv', sep=',')
     target_list = []
@@ -60,7 +61,11 @@ def airports_crawler():
         # open up connection
         airport_url = 'https://www.flightradar24.com/data/airports/'+str(code)+'/routes'
         # take the page
-        scraper = cfscrape.create_scraper()
+
+        if scraper_bypasser == 'cfscrape':
+            scraper = cfscrape.create_scraper()
+        else:
+            scraper = cloudscraper.create_scraper()
         raw_html = scraper.get(airport_url).content
         scraper.close()
         # parse contents to html
@@ -103,7 +108,7 @@ def airports_crawler():
     airports_df.to_csv('airports_data/flight_radar_24_airports.csv', sep=',')
 
 
-def routes_crawler():
+def routes_crawler(scraper_bypasser='cloudscraper'):
     # load the csv with the european airport codes
     df = pd.read_csv('airports_data/european_airports.csv', sep=',')
 
@@ -118,11 +123,21 @@ def routes_crawler():
     counter = 0
     for airport_code in df.IATA:
         counter += 1
+        print(50*"=")
         print(str(counter) + ') Crawling on ' + str(airport_code))
+        time.sleep(10)
+        print('sleeping...')
+        print(50*"=")
+
         # open up connection
         airport_fr_url = 'https://www.flightradar24.com/data/airports/' + str(airport_code) + '/routes'
         # take the page
-        scraper = cfscrape.create_scraper()
+
+        if scraper_bypasser == 'cfscrape':
+            scraper = cfscrape.create_scraper()
+        else:
+            scraper = cloudscraper.create_scraper()
+
         raw_html = scraper.get(airport_fr_url).content
         scraper.close()
         # parse contents to html
@@ -141,7 +156,11 @@ def routes_crawler():
 
         print('checking '+str(len(destinations_list))+' routes')
         print('destinations_list: '+str(destinations_list))
-        for destination in destinations_list:
+        for destination_count, destination in enumerate(destinations_list):
+            print('')
+            time.sleep(5)
+            print(str(destination_count)+')  sleeping...')
+            print()
             if destination['iata'] != None:
                 print('destination["iata"] != None : '+str(destination['iata'] != None))
                 print('destination["iata"] in airports_list : '+str(destination['iata'] in airports_list))
@@ -150,7 +169,10 @@ def routes_crawler():
 
                     print(str(airport_code) + ' <- -> ' + destination['iata'])
                     json_url = airport_fr_url + '?get-airport-arr-dep='+destination['iata']+'&format=json'
-                    scraper = cfscrape.create_scraper(delay=30)
+                    if scraper_bypasser == 'cfscrape':
+                        scraper = cfscrape.create_scraper(delay=30)
+                    else:
+                        scraper = cloudscraper.create_scraper(delay=30)
                     json_response = json.loads(scraper.get(json_url).content)
                     scraper.close()
 
