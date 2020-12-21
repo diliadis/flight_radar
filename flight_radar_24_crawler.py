@@ -13,7 +13,7 @@ import datetime
 from datetime import timedelta
 import time
 import numpy as np
-
+from tqdm import tqdm
 from folium import Map
 from folium.plugins import HeatMap
 import cloudscraper
@@ -156,7 +156,7 @@ def routes_crawler(scraper_bypasser='cloudscraper'):
 
         print('checking '+str(len(destinations_list))+' routes')
         print('destinations_list: '+str(destinations_list))
-        for destination_count, destination in enumerate(destinations_list):
+        for destination_count, destination in enumerate(tqdm(destinations_list)):
             print('')
             time.sleep(5)
             print(str(destination_count)+')  sleeping...')
