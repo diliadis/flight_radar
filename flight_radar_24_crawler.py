@@ -310,12 +310,12 @@ def get_flight_details_per_flight_code():
     canceled_arrival_list = []
     canceled_flight_codes_list = []
 
-    day_to_compare_txt = datetime.strftime(datetime.now() - timedelta(1), '%d %b %Y')
+    day_to_compare_txt = datetime.datetime.strftime(datetime.datetime.now() - timedelta(1), '%d %b %Y')
 
     df = pd.read_csv('flight_codes/flight_radar_24_flight_codes_snapshot19_7_2020.csv', sep=',')
     counter = 1
-    for flight_code in df.Flight_code:
-
+    for flight_code in tqdm(df.Flight_code):
+        time.sleep(5)
         if (counter != 0) and (counter % 1000 == 0):
             time.sleep(60)
 
@@ -365,8 +365,8 @@ def get_flight_details_per_flight_code():
                         print('Scheduled Departure time --> '+str(scheduled_departure_timestamp_str))
                         print('Actual Departure time --> '+str(actual_departure_timestamp_str))
                         # create timestamp objects from the strings
-                        scheduled_departure_timestamp = datetime.fromtimestamp(int(scheduled_departure_timestamp_str))
-                        actual_departure_timestamp = datetime.fromtimestamp(int(actual_departure_timestamp_str))
+                        scheduled_departure_timestamp = datetime.datetime.fromtimestamp(int(scheduled_departure_timestamp_str))
+                        actual_departure_timestamp = datetime.datetime.fromtimestamp(int(actual_departure_timestamp_str))
 
 
                         scheduled_arrival_timestamp_str = row_tds[9]['data-timestamp']
@@ -374,8 +374,8 @@ def get_flight_details_per_flight_code():
                         print('Scheduled Arival time --> '+str(scheduled_arrival_timestamp_str))
                         print('Actual Arival time --> '+str(actual_arrival_timestamp_str))
                         # create timestamp objects from the strings
-                        scheduled_arrival_timestamp = datetime.fromtimestamp(int(scheduled_arrival_timestamp_str))
-                        actual_arrival_timestamp = datetime.fromtimestamp(int(actual_arrival_timestamp_str))
+                        scheduled_arrival_timestamp = datetime.datetime.fromtimestamp(int(scheduled_arrival_timestamp_str))
+                        actual_arrival_timestamp = datetime.datetime.fromtimestamp(int(actual_arrival_timestamp_str))
 
                         print(' ')
 
