@@ -400,7 +400,7 @@ def get_flight_details_per_flight_code():
                             arrival_delay_list.append(True)
                             print('There was a delay during arival')
                         else:
-                            arrival_delay_list.append(False)
+                            arrival_delay_list.append(False)locals()
                             print('The flight landed earlier than expected')
 
                         from_airports_list.append(from_airport_code)
