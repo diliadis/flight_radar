@@ -108,7 +108,7 @@ def airports_crawler(scraper_bypasser='cloudscraper'):
     airports_df.to_csv('airports_data/flight_radar_24_airports.csv', sep=',')
 
 
-def routes_crawler(scraper_bypasser='cloudscraper'):
+def routes_crawler(scraper_bypasser='cloudscraper', starting_airport=None):
     # load the csv with the european airport codes
     df = pd.read_csv('airports_data/european_airports.csv', sep=',')
 
@@ -121,7 +121,14 @@ def routes_crawler(scraper_bypasser='cloudscraper'):
 
     # for every airport code in the dataframe we loeaded get the location where you can fly to
     counter = 0
-    for airport_code in df.IATA:
+
+    remaining_airports_list = []
+    if starting_airport is not None:
+        remaining_airports_list = df.loc[df.loc[df['IATA'] == starting_airport].index[0]:].IATA
+    else:
+        remaining_airports_list = df.IATA
+
+    for airport_code in remaining_airports_list:
         counter += 1
         print(50*"=")
         print(str(counter) + ') Crawling on ' + str(airport_code))
