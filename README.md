@@ -44,6 +44,11 @@ The visualization can be customized based on the size of every airport's node as
 ## Average departure delay 20/1/2021
 ![alt text](https://github.com/diliadis/flight_radar/blob/master/images/20_1_2021_average_departure_delay.png)
 
+## Average departure delay 20/5/2021
+![alt text](https://github.com/diliadis/flight_radar/blob/master/images/20_5_2021_average_departure_delay.png)
 
 ## Average arrival delay 20/1/2021
 ![alt text](https://github.com/diliadis/flight_radar/blob/master/images/20_1_2021_average_arrival_delay.png)
+
+## Average arrival delay 20/5/2021
+![alt text](https://github.com/diliadis/flight_radar/blob/master/images/20_5_2021_average_arrival_delay.png)
