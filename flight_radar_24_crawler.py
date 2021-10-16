@@ -108,7 +108,7 @@ def airports_crawler(scraper_bypasser='cloudscraper'):
     airports_df.to_csv('airports_data/flight_radar_24_airports.csv', sep=',')
 
 
-def routes_crawler(scraper_bypasser='cloudscraper', starting_airport=None):
+def routes_crawler(scraper_bypasser='cloudscraper', starting_airport=None, verbose=True, num_attempts=10):
     # load the csv with the european airport codes
     df = pd.read_csv('airports_data/european_airports.csv', sep=',')
 
@@ -160,66 +160,85 @@ def routes_crawler(scraper_bypasser='cloudscraper', starting_airport=None):
                 start = tag.find('[')
                 finish = tag.find(']')
                 destinations_list = json.loads(tag[start:finish + 1])
-
-        print('checking '+str(len(destinations_list))+' routes')
-        print('destinations_list: '+str(destinations_list))
+        if verbose:
+            print('checking '+str(len(destinations_list))+' routes')
+            print('destinations_list: '+str(destinations_list))
         for destination_count, destination in enumerate(tqdm(destinations_list)):
-            print('')
+            if verbose:
+                print('')
             time.sleep(5)
-            print(str(destination_count)+')  sleeping...')
-            print()
+            if verbose:
+                print(str(destination_count)+')  sleeping...')
+                print()
             if destination['iata'] != None:
-                print('destination["iata"] != None : '+str(destination['iata'] != None))
-                print('destination["iata"] in airports_list : '+str(destination['iata'] in airports_list))
-                print('str(airport_code) in airports_list : '+str(str(airport_code) in airports_list))
+                if verbose:
+                    print('destination["iata"] != None : '+str(destination['iata'] != None))
+                    print('destination["iata"] in airports_list : '+str(destination['iata'] in airports_list))
+                    print('str(airport_code) in airports_list : '+str(str(airport_code) in airports_list))
                 if destination['iata'] in airports_list and str(airport_code) in airports_list:
 
                     print(str(airport_code) + ' <- -> ' + destination['iata'])
                     json_url = airport_fr_url + '?get-airport-arr-dep='+destination['iata']+'&format=json'
-                    if scraper_bypasser == 'cfscrape':
-                        scraper = cfscrape.create_scraper(delay=30)
-                    else:
-                        scraper = cloudscraper.create_scraper(delay=30)
-                    json_response = json.loads(scraper.get(json_url).content)
-                    scraper.close()
+                    for attempt_no in range(num_attempts):
+                        try:
+                            if scraper_bypasser == 'cfscrape':
+                                scraper = cfscrape.create_scraper(delay=30)
+                            else:
+                                scraper = cloudscraper.create_scraper(delay=30)
+                            json_response = json.loads(scraper.get(json_url).content)
+                            scraper.close()
+                            break
+                        except:
+                            time.sleep(30)
+                            print('ERROR PARSING JSON FILE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
 
                     if json_response: #check if the json is not empty
                         try:
                             for m in ['arrivals', 'departures']:
                                 number_of_flights = 0
-                                print('m: '+str(m))
-                                print('list(json_response[m].values()): '+str(list(json_response[m].values())))
-                                print('list(list(json_response[m].values())[0]["airports"].values())'+str(list(list(json_response[m].values())[0]['airports'].values())))
                                 flights = list(list(json_response[m].values())[0]['airports'].values())[0]['flights']
-                                print('flights'+str(flights))
+                                if verbose:
+                                    print('m: '+str(m))
+                                    print('list(json_response[m].values()): '+str(list(json_response[m].values())))
+                                    print('list(list(json_response[m].values())[0]["airports"].values())'+str(list(list(json_response[m].values())[0]['airports'].values())))
+                                    print('flights'+str(flights))
+
                                 for flight in flights.values():
                                     hours = flight['utc']
-                                    print('hours: '+str(hours))
                                     number_of_flights += len(hours)
-                                    print('number_of_flights: '+str(number_of_flights))
+                                    if verbose:
+                                        print('hours: '+str(hours))
+                                        print('number_of_flights: '+str(number_of_flights))
 
                                 number_of_flights_list.append(number_of_flights)
-                                print('number_of_flights_list: '+str(number_of_flights_list))
-                                print('destination["iata"]: '+str(destination['iata']))
                                 airport_1_code = airports_list.index(destination['iata'])
-                                print('airport_1_code: '+str(airport_1_code))
-                                print('str(airport_code): '+str(airport_code))
                                 airport_2_code = airports_list.index(str(airport_code))
-                                print('airport_2_code: '+str(airport_2_code))
+
+                                if verbose:
+                                    print('number_of_flights_list: '+str(number_of_flights_list))
+                                    print('destination["iata"]: '+str(destination['iata']))
+                                    print('airport_1_code: '+str(airport_1_code))
+                                    print('str(airport_code): '+str(airport_code))
+                                    print('airport_2_code: '+str(airport_2_code))
                                 if m == 'arrivals':
-                                    print('Arrivals     '+str(number_of_flights)+' flights')
+                                    if verbose:
+                                        print('Arrivals     '+str(number_of_flights)+' flights')
                                     source_airport_list.append(airport_1_code)
                                     target_airport_list.append(airport_2_code)
                                 else:
-                                    print('Departures   '+str(number_of_flights) + ' flights')
+                                    if verbose:
+                                        print('Departures   '+str(number_of_flights) + ' flights')
                                     target_airport_list.append(airport_1_code)
                                     source_airport_list.append(airport_2_code)
                         except KeyError:
-                            print('THERE ARE NOT DIRECT FLIGHTS')
+                            if verbose:
+                                print('THERE ARE NOT DIRECT FLIGHTS')
                     else:
-                        print('DOES NOT HAVE ANY FLIGHTS!!!')
+                        if verbose:
+                            print('DOES NOT HAVE ANY FLIGHTS!!!')
             else:
-                print('This airport has no iata code registered :' + destination['icao'])
+                if verbose:
+                    print('This airport has no iata code registered :' + destination['icao'])
         print('=======================================================================================================')
     routes_df = pd.DataFrame({'Source': source_airport_list, 'Target': target_airport_list, 'Weight': number_of_flights_list})
     now = datetime.datetime.now()
