@@ -109,6 +109,10 @@ def airports_crawler(scraper_bypasser='cloudscraper'):
 
 
 def routes_crawler(scraper_bypasser='cloudscraper', starting_airport=None, verbose=True, num_attempts=10):
+
+    now = datetime.datetime.now()
+    current_day, current_month, current_year = str(now.day), str(now.month), str(now.year)
+
     # load the csv with the european airport codes
     df = pd.read_csv('airports_data/european_airports.csv', sep=',')
 
@@ -120,16 +124,13 @@ def routes_crawler(scraper_bypasser='cloudscraper', starting_airport=None, verbo
     number_of_flights_list = []
 
     # for every airport code in the dataframe we loeaded get the location where you can fly to
-    counter = 0
-
     remaining_airports_list = []
     if starting_airport is not None:
         remaining_airports_list = df.loc[df.loc[df['IATA'] == starting_airport].index[0]:].IATA
     else:
         remaining_airports_list = df.IATA
 
-    for airport_code in remaining_airports_list:
-        counter += 1
+    for counter, airport_code in enumerate(remaining_airports_list):
         print(50*"=")
         print(str(counter) + ') Crawling on ' + str(airport_code))
         time.sleep(10)
@@ -138,8 +139,8 @@ def routes_crawler(scraper_bypasser='cloudscraper', starting_airport=None, verbo
 
         # open up connection
         airport_fr_url = 'https://www.flightradar24.com/data/airports/' + str(airport_code) + '/routes'
+        
         # take the page
-
         if scraper_bypasser == 'cfscrape':
             scraper = cfscrape.create_scraper()
         else:
@@ -160,9 +161,11 @@ def routes_crawler(scraper_bypasser='cloudscraper', starting_airport=None, verbo
                 start = tag.find('[')
                 finish = tag.find(']')
                 destinations_list = json.loads(tag[start:finish + 1])
+
         if verbose:
             print('checking '+str(len(destinations_list))+' routes')
-            print('destinations_list: '+str(destinations_list))
+            # print('destinations_list: '+str(destinations_list))
+
         for destination_count, destination in enumerate(tqdm(destinations_list)):
             if verbose:
                 print('')
@@ -172,9 +175,10 @@ def routes_crawler(scraper_bypasser='cloudscraper', starting_airport=None, verbo
                 print()
             if destination['iata'] != None:
                 if verbose:
-                    print('destination["iata"] != None : '+str(destination['iata'] != None))
-                    print('destination["iata"] in airports_list : '+str(destination['iata'] in airports_list))
-                    print('str(airport_code) in airports_list : '+str(str(airport_code) in airports_list))
+                    # print('destination["iata"] != None : '+str(destination['iata'] != None))
+                    # print('destination["iata"] in airports_list : '+str(destination['iata'] in airports_list))
+                    # print('str(airport_code) in airports_list : '+str(str(airport_code) in airports_list))
+                    pass
                 if destination['iata'] in airports_list and str(airport_code) in airports_list:
 
                     print(str(airport_code) + ' <- -> ' + destination['iata'])
@@ -198,28 +202,29 @@ def routes_crawler(scraper_bypasser='cloudscraper', starting_airport=None, verbo
                                 number_of_flights = 0
                                 flights = list(list(json_response[m].values())[0]['airports'].values())[0]['flights']
                                 if verbose:
-                                    print('m: '+str(m))
-                                    print('list(json_response[m].values()): '+str(list(json_response[m].values())))
-                                    print('list(list(json_response[m].values())[0]["airports"].values())'+str(list(list(json_response[m].values())[0]['airports'].values())))
-                                    print('flights'+str(flights))
-
+                                    # print('m: '+str(m))
+                                    # print('list(json_response[m].values()): '+str(list(json_response[m].values())))
+                                    # print('list(list(json_response[m].values())[0]["airports"].values())'+str(list(list(json_response[m].values())[0]['airports'].values())))
+                                    # print('flights'+str(flights))
+                                    pass
                                 for flight in flights.values():
                                     hours = flight['utc']
                                     number_of_flights += len(hours)
                                     if verbose:
-                                        print('hours: '+str(hours))
-                                        print('number_of_flights: '+str(number_of_flights))
-
+                                        # print('hours: '+str(hours))
+                                        # print('number_of_flights: '+str(number_of_flights))
+                                        pass
                                 number_of_flights_list.append(number_of_flights)
                                 airport_1_code = airports_list.index(destination['iata'])
                                 airport_2_code = airports_list.index(str(airport_code))
 
                                 if verbose:
-                                    print('number_of_flights_list: '+str(number_of_flights_list))
-                                    print('destination["iata"]: '+str(destination['iata']))
-                                    print('airport_1_code: '+str(airport_1_code))
-                                    print('str(airport_code): '+str(airport_code))
-                                    print('airport_2_code: '+str(airport_2_code))
+                                    # print('number_of_flights_list: '+str(number_of_flights_list))
+                                    # print('destination["iata"]: '+str(destination['iata']))
+                                    # print('airport_1_code: '+str(airport_1_code))
+                                    # print('str(airport_code): '+str(airport_code))
+                                    # print('airport_2_code: '+str(airport_2_code))
+                                    pass
                                 if m == 'arrivals':
                                     if verbose:
                                         print('Arrivals     '+str(number_of_flights)+' flights')
@@ -242,7 +247,7 @@ def routes_crawler(scraper_bypasser='cloudscraper', starting_airport=None, verbo
         print('=======================================================================================================')
     routes_df = pd.DataFrame({'Source': source_airport_list, 'Target': target_airport_list, 'Weight': number_of_flights_list})
     now = datetime.datetime.now()
-    output_file_name = 'routes_data/flight_radar_24_routes_with_weights_and_bi_direct_'+str(now.day)+'_'+str(now.month)+'_'+str(now.year)+'.csv'
+    output_file_name = 'routes_data/flight_radar_24_routes_with_weights_and_bi_direct_'+current_day+'_'+current_month+'_'+current_year+'.csv'
     routes_df.to_csv(output_file_name, sep=',')
     return output_file_name
 
