@@ -47,6 +47,12 @@ The visualization can be customized based on the size of every airport's node as
 ## Europe at 4/7/2021
 ![alt text](https://github.com/diliadis/flight_radar/blob/master/images/4_7_2021_node_size__in_degree__node_color_in_degree.png)
 
+## Europe at 22/5/2022
+![alt text](https://github.com/diliadis/flight_radar/blob/master/images/22_5_2022_node_size__in_degree__node_color_in_degree.png)
+
+## Europe at 17/6/2022
+![alt text](https://github.com/diliadis/flight_radar/blob/master/images/17_6_2022_node_size__in_degree__node_color_in_degree.png)
+
 ## Average departure delay 20/1/2021
 ![alt text](https://github.com/diliadis/flight_radar/blob/master/images/20_1_2021_average_departure_delay.png)
 
