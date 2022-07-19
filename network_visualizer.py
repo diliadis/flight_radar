@@ -41,12 +41,12 @@ def plot_network_on_map(graph, df, node_size_choice=None, node_color_choice=None
         node_size = [graph.out_degree(n) for n in graph.nodes]
 
     if node_color_choice is not None and node_color_choice != 'r':
-        nc = nx.draw_networkx_nodes(G=graph, pos=pos, node_list=graph.nodes(),
+        nc = nx.draw_networkx_nodes(G=graph, pos=pos, nodelist=graph.nodes(),
                                     node_color=node_color, alpha=0.8, node_size=node_size,
                                     cmap=cmap)
         plt.colorbar(nc)
     else:
-        nx.draw_networkx_nodes(G=graph, pos=pos, node_list=graph.nodes(),
+        nx.draw_networkx_nodes(G=graph, pos=pos, nodelist=graph.nodes(),
                                node_color=node_color, alpha=0.8, node_size=node_size,
                                cmap=cmap)
 
